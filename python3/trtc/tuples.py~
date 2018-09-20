@@ -1,0 +1,3 @@
+p = namedtuple('Point', ['x', 'y', 'z', 'w'])
+v = namedtuple('Vector', ['x', 'y', 'z', 'w'])
+
