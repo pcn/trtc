@@ -93,13 +93,18 @@ def step_impl(context, x, y, z, w):
 
 @given('a1 is a tuple of "{x}", "{y}", "{z}", "{w}"')
 def step_impl(context, x, y, z, w):
-    context.a1 = (x, y, z, w)
+    context.a1 = (int(x), int(y), int(z), int(w))
 
-@given('a2 is a tuple of "{x}", "{y}", "{z}", "{w}"')
-def step_impl(context, x, y, z, w):
-    context.a2 = (x, y, z, w)
+@given('a2 is a tuple of "{a}", "{b}", "{c}", "{d}"')
+def step_impl(context, a, b, c, d):
+    context.a2 = (int(a), int(b), int(c), int(d))
 
+@given(u'a2 is a tuple of "-2", "3, "1", "0"')
+def step_impl(context):
+    context.a2 = (int(-2), int(3), int(1), int(0))
+
+    
 @then('a1 + a2 is a tuple of "{x}", "{y}", "{z}", "{w}"')
 def step_impl(context, x, y, z, w):
-    return tuples.t_add(t1, t2) == (x, y, z, w)
+    return tuples.t_add(context.a1, context.a2) == (x, y, z, w)
     

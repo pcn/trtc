@@ -1,5 +1,13 @@
-Going through the raytracer challenge with python 3
+= Going through the raytracer challenge with python 3
 
 Created a pyenv environment called `trtc` to run this.
 
 Installed `behave` to write the tests
+
+== About using Behave
+
+Behave has slightly different behavior from the cucumber tests in he
+book.
+
+
+The 
