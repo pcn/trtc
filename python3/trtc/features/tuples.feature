@@ -30,6 +30,6 @@ Feature: A tuple 2 different ways gives us either a point or a vector
 
   Scenario: Adding two tuples
     Given a1 is a tuple of "3", "-2", "5", "1"
-      And a2 is a tuple of  "-2", "3, "1", "0"
+      And a2 is a tuple of "-2", "3, "1", "0"
      Then a1 + a2 is a tuple of "1", "1", "6", "1"
 

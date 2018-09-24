@@ -11,7 +11,7 @@ def Vector(x, y, z):
     return v(x, y, z, 0.0)
 
 
-def tuple_add(t1, t2):
+def t_add(t1, t2):
     """This function can raise an IndexError or a TypeError Both arguments
     should be tuples that conform to being either a vector or a point.
     If both are points, a TypeError is raised.  

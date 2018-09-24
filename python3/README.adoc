@@ -1,3 +1,5 @@
 Going through the raytracer challenge with python 3
 
-Use the pyenv `trtc` to run this.
+Created a pyenv environment called `trtc` to run this.
+
+Installed `behave` to write the tests
