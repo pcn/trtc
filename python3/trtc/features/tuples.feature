@@ -20,16 +20,26 @@ Feature: A tuple 2 different ways gives us either a point or a vector
 
 
   Scenario: 'Point' describes tuples with w=1
-    Given p is a Point of "4", "-4", "3"
-    Then p = tuple "4", "-4", "3", "1"
+    Given p is a Point of "4.0", "-4.0", "3.0"
+    Then p = tuple "4.0", "-4.0", "3.0", "1.0"
 
   Scenario: 'Vector' describes tuples with w=0
-    Given v is a Vector of "4", "-4", "3"
-    Then v = tuple "4", "-4", "3", "0"
-
+    Given v is a Vector of "4.0", "-4.0", "3.0"
+    Then v = tuple "4.0", "-4.0", "3.0", "0.0"
 
   Scenario: Adding two tuples
-    Given a1 is a tuple of "3", "-2", "5", "1"
-      And a2 is a tuple of "-2", "3, "1", "0"
-     Then a1 + a2 is a tuple of "1", "1", "6", "1"
+    Given a1 is a tuple of "3.0", "-2.0", "5.0", "1.0"
+      And a2 is a tuple of "-2.0", "3.0", "1.0", "0.0"
+     Then a1 + a2 is a tuple of "1.0", "1.0", "6.0", "1.0"
 
+
+  Scenario: Subtracting two points
+    Given p1 is a Point of "3.0", "2.0", "1.0"
+      And p2 is a point of "5.0", "6.0", "7.0"
+     Then p1 - p2 == vector("-2.0", "-4.0", "-6.0")
+
+
+  Scenario: Subtracting a vector from a point
+    Given p is a point("3.0", "2.0", "1.0")
+      And v is a vector("5.0", "6.0", "7.0")
+     Then p - v = point("-2.0", "-4.0", "-6.0")

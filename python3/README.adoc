@@ -10,4 +10,5 @@ Behave has slightly different behavior from the cucumber tests in he
 book.
 
 
-The 
+I'm having some issues using more than one given with parameters
+at the moment: https://github.com/behave/behave/issues/691
