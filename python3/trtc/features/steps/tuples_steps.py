@@ -3,10 +3,19 @@ from behave import given, when, then, step
 import tuples
 import util
 
+"""
+Copy the below with `C-c a y w` (or M-x aya-create) to get an
+auto-yasnippet of a test given with vectors/points/tuples
+@given('v is a vector("{x:f}", "{y:f}", "{z:f}")')
+def step_impl(context, x, y, z):
+    context.v = tuples.Vector(x, y, z)
+"""
+
+
 @given('a is a tuple of "{x:f}", "{y:f}", "{z:f}", "{w:f}"')
 def step_impl(context, x, y, z, w):
     # a == (4.3, -4.2, 3.1, 1.0)
-    context.a = tuples.p(x, y, z, w)
+    context.a = tuples.Point(x, y, z)
     # context.a = a
     # return context.a == (4.3, -4.2, 3.1, 1.0)
 
@@ -42,7 +51,7 @@ def step_impl(context):
 
 @given('b is a tuple of "{x}", "{y}", "{z}", "{w}"')
 def step_impl(context, x, y, z, w):
-    context.b = tuples.v(4.3, -4.2, 3.1, 0.0)
+    context.b = tuples.Vector(4.3, -4.2, 3.1)
 
 @then(u'b.x = 4.3')
 def step_impl(context):
@@ -122,3 +131,28 @@ def step_impl(context, x, y, z):
 @given('p is a point("{x:f}", "{y:f}", "{z:f}")')
 def step_impl(context, x, y, z):
     context.p = tuples.Point(x, y, z)
+
+@given('v is a vector("{x:f}", "{y:f}", "{z:f}")')
+def step_impl(context, x, y, z):
+    context.v = tuples.Vector(x, y, z)
+
+@then('p - v == point("{x:f}", "{y:f}", "{z:f}")')
+def step_impl(context, x, y, z):
+    result = tuples.t_sub(context.p, context.v)
+    should_equal = tuples.Point(x, y, z)
+    assert(result == should_equal)
+
+    
+@given('v1 is a vector("{x:f}", "{y:f}", "{z:f}")')
+def step_impl(context, x, y, z):
+    context.v1 = tuples.Vector(x, y, z)
+
+@given('v2 is a vector("{x:f}", "{y:f}", "{z:f}")')
+def step_impl(context, x, y, z):
+    context.v2 = tuples.Vector(x, y, z)
+
+@then('v1 - v2 == vector("{x:f}", "{y:f}", "{z:f}")')
+def step_impl(context, x, y, z):
+    result = tuples.t_sub(context.v1, context.v2)
+    should_equal = tuples.Vector(x, y, z)
+    assert(result == should_equal)

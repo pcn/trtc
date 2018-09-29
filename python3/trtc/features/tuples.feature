@@ -42,4 +42,10 @@ Feature: A tuple 2 different ways gives us either a point or a vector
   Scenario: Subtracting a vector from a point
     Given p is a point("3.0", "2.0", "1.0")
       And v is a vector("5.0", "6.0", "7.0")
-     Then p - v = point("-2.0", "-4.0", "-6.0")
+     Then p - v == point("-2.0", "-4.0", "-6.0")
+
+
+ Scenario: Subtracting two vectors
+    Given v1 is a vector("3.0", "2.0", "1.0")
+      And v2 is a vector("5.0", "6.0", "7.0")
+     Then v1 - v2 == vector("-2.0", "-4.0", "-6.0")

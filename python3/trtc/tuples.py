@@ -3,15 +3,15 @@ import logging
 from collections import namedtuple
 import util
 
-p = namedtuple('Point', ['x', 'y', 'z', 'w'])
-v = namedtuple('Vector', ['x', 'y', 'z', 'w'])
+_p = namedtuple('Point', ['x', 'y', 'z', 'w'])
+_v = namedtuple('Vector', ['x', 'y', 'z', 'w'])
 
 def Point(x, y, z):
-    return p(x, y, z, 1.0)
+    return _p(x, y, z, 1.0)
 
 
 def Vector(x, y, z):
-    return v(x, y, z, 0.0)
+    return _v(x, y, z, 0.0)
 
 
 def t_add(t1, t2):
