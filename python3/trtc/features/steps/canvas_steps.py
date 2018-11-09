@@ -51,7 +51,7 @@ def step_impl(context):
 def step_impl(context):
     print(f'{"".join(context.ppm[0:3])}')
     print(f'{context.text}')
-    assert "".join(context.ppm[0:3]) == context.text    
+    assert "\n".join(context.ppm[0:3]) == context.text    
      
 
 # Construcing the PPM pixel data
@@ -89,7 +89,47 @@ def step_impl(context):
     
 @then('lines 4-6 of ppm2 are')
 def step_impl(context):
-    print(f'{"".join(context.ppm2[4:6])}')
-    print(f'{context.ppm2}')
+    fmtted = format("\n".join(context.ppm2[3:6]))
+    print(f'{fmtted}')
     print(f'{context.text}')
-    assert "".join(context.ppm2[4:6]) == context.text    
+    assert fmtted == context.text    
+
+# Scenario: Splitting long lines in PPM files
+@given('c = canvas({width:d}, {height:d})')
+def step_impl(context, width, height):
+    context.c = canvas.Canvas(width, height)
+
+@when('Every pixel of c is set to Color({r:f}, {g:f}, {b:f})')
+def set_impl(context, r, g, b):
+    w = context.c.width
+    h = context.c.height
+    fill_color = tuples.Color(r, g, b)
+    flooded_canvas = canvas.Canvas(w, h, fill=fill_color)
+    context.c = flooded_canvas
+    
+@when('ppm3 = canvas_to_ppm(c)')
+def step_impl(context):
+    context.ppm3 = list(canvas.canvas_to_ppm(context.c))
+
+@then('lines 4-7 of ppm3 are')
+def step_impl(context, ):
+    fmtted = format("\n".join(context.ppm3[3:7]))
+    print(f'{fmtted}')
+    print(f'{context.text}')
+    assert fmtted == context.text    
+
+    
+# Scenario PPM files are terminated by a newlines    
+@given('c = Canvas({width:d}, {height:d})')
+def step_impl(context, width, height):
+    context.c = canvas.Canvas(width, height)
+
+@when('ppm4 = canvas_to_ppm(c)')
+def step_impl(context):
+    context.ppm4 = list(canvas.canvas_to_ppm(context.c))
+
+@then('the last character of ppm4 is a newline')
+def step_impl(context):
+    print(context.ppm4[-1])
+    assert  context.ppm4[-1][-1] == "\n"
+

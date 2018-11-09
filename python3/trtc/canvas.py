@@ -6,7 +6,7 @@ from functools import reduce
 import util
 import tuples
 
-_c = namedtuple('Canvas', ['height', 'width', 'pixels'])
+_c = namedtuple('Canvas', ['width', 'height', 'pixels'])
 
 
 def Canvas(width, height, fill=tuples.Color(0.0, 0.0, 0.0)):
@@ -16,17 +16,17 @@ def Canvas(width, height, fill=tuples.Color(0.0, 0.0, 0.0)):
     because it seems natural.  However when storing and accessing them,
     it makes sense to have them be height, width (y, x).
     """
-    pixels = [[fill] * int(height) for count in range(int(width))]
+    pixels = [[fill] * int(width) for count in range(int(height))]
     return _c(width, height, pixels)
 
 def write_pixel(canvas, width, height, value):
     """The book has this implemented as
     height, width for accesses"""
-    canvas.pixels[width][height] = value
+    canvas.pixels[height][width] = value
     return pixel_at(canvas, width, height)
 
 def pixel_at(canvas, width, height):
-    return canvas.pixels[width][height]
+    return canvas.pixels[height][width]
 
 
 def _yield_row(row, least, most, ppm_max_line_len):
@@ -42,7 +42,7 @@ def _yield_row(row, least, most, ppm_max_line_len):
             elif i >= 1.0:
                 yield most
             else:
-                yield int(i * (most - least))
+                yield int(math.ceil(i * (most - least)))
                 
     def _yield_colors():
         "provide each pixel as a series of red, green, and blue strings"
@@ -60,25 +60,28 @@ def _yield_row(row, least, most, ppm_max_line_len):
             # print(f"speculative_len is {speculative_len}, and it'll overrun")
             line_pos = 0
             yield "\n"
-        line_pos += (1 + len(str(this_pix_color)))
-        yield "{} ".format(this_pix_color)
-    
+        if line_pos != 0:
+            line_pos += (1 + len(str(this_pix_color)))
+            yield " {}".format(this_pix_color)
+        else:
+            line_pos += len(str(this_pix_color))
+            yield "{}".format(this_pix_color)
+            
 
 def canvas_to_ppm(c):
     """Canvas gets written out, 70 characters per line.  Each pixel is
     somewhere between 6 and 12 characters (r,g,b and spaces), so
     we have a generator that splits up each line.
-
+    
+    This doesn't provide newlines, those should be handled by the caller when e.g. writing to disk.
     """
     min_color = 0
     max_color = 255
     line_len = 70
     
-    yield "P3\n"
-    yield f"{len(c.pixels)} {len(c.pixels[0])}\n"
+    yield "P3"
+    yield f"{len(c.pixels[0])} {len(c.pixels)}"
     yield f"{max_color}"
-    yield "\n"  # This is a separate yield to end up as the 4th element yielded
-                # so the test for the header contents pass without the newline
     for line in c.pixels:
-        yield "".join(_yield_row(line, min_color, max_color, line_len))
-        yield "\n"
+        yield "".join(_yield_row(line, min_color, max_color, line_len)).strip()
+    yield "\n"
