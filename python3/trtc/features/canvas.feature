@@ -27,19 +27,20 @@ Scenario: Constructing the PPM header
     """
 
 Scenario: Constructing the PPM pixel data
-  Given c = canvas(5.0, 3.0)
+  Given c = canvas(5, 3)
   And c1 = color(1.5, 0.0, 0.0)
-  And c2 = color(0.0, 0.5, 0)
-  And c3 = color(-0.5, 0, 1)
+  And c2 = color(0.0, 0.5, 0.0)
+  And c3 = color(-0.5, 0.0, 1.0)
   When write_pixel(c, 0, 0, c1)
   And write_pixel(c, 2, 1, c2)
   And write_pixel(c, 4, 2, c3)
-  And ppm = canvas_to_ppm(c)
-  Then lines 4-6 of ppm are 
+  And ppm2 = canvas_to_ppm(c)
+  Then lines 4-6 of ppm2 are 
   """
   255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
   0 0 0 0 0 0 0 128 0 0 0 0 0 0 0 
   0 0 0 0 0 0 0 0 0 0 0 0 0 0 255
+  """
 
 
 

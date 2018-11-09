@@ -38,7 +38,7 @@ def step_impl(context, can, h, w, color):
 def step_impl(context, can, h, w, color):
     assert canvas.pixel_at(getattr(context, can), h, w) == getattr(context, color)
 
-
+# Constructing the PPM header
 @given('c = canvas({width:d}, {height:d})')
 def step_impl(context, width, height):
     context.c = canvas.Canvas(width, height)
@@ -53,3 +53,43 @@ def step_impl(context):
     print(f'{context.text}')
     assert "".join(context.ppm[0:3]) == context.text    
      
+
+# Construcing the PPM pixel data
+@given('c = Canvas({width:d}, {height:d})')
+def step_impl(context, width, height):
+    context.c = canvas.Canvas(width, height)
+
+@given('c1 = Color({r:f}, {g:f}, {b:f})')
+def step_impl(context, r, g, b):
+    context.c1 = tuples.Color(r, g, b)
+
+@given('c2 = Color({r:f}, {g:f}, {b:f})')
+def step_impl(context, r, g, b):
+    context.c2 = tuples.Color(r, g, b)
+
+@given('c3 = Color({r:f}, {g:f}, {b:f})')
+def step_impl(context, r, g, b):
+    context.c3 = tuples.Color(r, g, b)
+
+@when('write_pixel({can:w}, {x:d}, {y:d}, {color:w})')
+def step_impl(context, x, y):
+    canvas.write_pixel(getattr(context, can), w, h, getattr(context, color))
+
+@when('write_pixel({can:w}, {x:d}, {y:d}, {color:w})')
+def step_impl(context, x, y):
+    canvas.write_pixel(getattr(context, can), w, h, getattr(context, color))
+
+@when('write_pixel({can:w}, {x:d}, {y:d}, {color:w})')
+def step_impl(context, x, y):
+    canvas.write_pixel(getattr(context, can), w, h, getattr(context, color))
+
+@when('ppm2 = canvas_to_ppm(c)')
+def step_impl(context):
+    context.ppm2 = list(canvas.canvas_to_ppm(context.c))
+    
+@then('lines 4-6 of ppm2 are')
+def step_impl(context):
+    print(f'{"".join(context.ppm2[4:6])}')
+    print(f'{context.ppm2}')
+    print(f'{context.text}')
+    assert "".join(context.ppm2[4:6]) == context.text    

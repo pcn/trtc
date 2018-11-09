@@ -12,19 +12,21 @@ _c = namedtuple('Canvas', ['height', 'width', 'pixels'])
 def Canvas(width, height, fill=tuples.Color(0.0, 0.0, 0.0)):
     """Canvas appears to be a 2-dimensional structure.
 
-    For the pixels, we're going to refer to them by width, height
+    For the pixels, we're going to refer to them by width (x), height (y)
     because it seems natural.  However when storing and accessing them,
-    it makes sense to have them be height, width.
+    it makes sense to have them be height, width (y, x).
     """
     pixels = [[fill] * int(height) for count in range(int(width))]
     return _c(width, height, pixels)
 
 def write_pixel(canvas, width, height, value):
-    canvas.pixels[height][width] = value
-    return canvas.pixels[height][width]
+    """The book has this implemented as
+    height, width for accesses"""
+    canvas.pixels[width][height] = value
+    return pixel_at(canvas, width, height)
 
 def pixel_at(canvas, width, height):
-    return canvas.pixels[height][width]
+    return canvas.pixels[width][height]
 
 
 def _yield_row(row, least, most, ppm_max_line_len):
@@ -73,10 +75,10 @@ def canvas_to_ppm(c):
     line_len = 70
     
     yield "P3\n"
-    yield f"{len(c.pixels[0])} {len(c.pixels)}\n"
+    yield f"{len(c.pixels)} {len(c.pixels[0])}\n"
     yield f"{max_color}"
     yield "\n"  # This is a separate yield to end up as the 4th element yielded
                 # so the test for the header contents pass without the newline
     for line in c.pixels:
-        yield "".join(yield_line(line, min_color, max_color, line_len))
+        yield "".join(_yield_row(line, min_color, max_color, line_len))
         yield "\n"
