@@ -82,12 +82,12 @@ def canvas_to_ppm(c):
     yield "P3"
     yield f"{len(c.pixels[0])} {len(c.pixels)}"
     yield f"{max_color}"
-    yield "\n"  # This is a separate yield to end up as the 4th element yielded
+    # yield "\n"  # This is a separate yield to end up as the 4th element yielded
                 # so the test for the header contents pass without the newline
 
-    for idx in range(len(c.pixels[0])):
-        line = [ pix[idx] for pix in c.pixels ]
+    # for idx in range(len(c.pixels[0])):
+    for line in c.pixels:
+        # line = [ pix[idx] for pix in c.pixels ]
         print(f"Line is {line}")
         print(f"Len of line id {len(line)}")
-        yield "".join(_yield_row(line, min_color, max_color, line_len)).strip()
-        yield "\n"
+        yield f'{"".join(_yield_row(line, min_color, max_color, line_len))}\n'

@@ -89,7 +89,7 @@ def step_impl(context):
     
 @then('lines 4-6 of ppm2 are')
 def step_impl(context):
-    fmtted = format("\n".join(context.ppm2[3:6]))
+    fmtted = "".join(context.ppm2[3:6]).strip()
     print(f'{fmtted}')
     print(f'{context.text}')
     assert fmtted == context.text    
@@ -113,9 +113,9 @@ def step_impl(context):
 
 @then('lines 4-7 of ppm3 are')
 def step_impl(context, ):
-    fmtted = format("\n".join(context.ppm3[3:7]))
-    print(f'{fmtted}')
-    print(f'{context.text}')
+    fmtted = format("".join(context.ppm3[3:7])).strip()
+    print(f'_{fmtted}_')
+    print(f'_{context.text}_')
     assert fmtted == context.text    
 
     
