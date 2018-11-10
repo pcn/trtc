@@ -2,6 +2,8 @@ from behave import given, when, then, step
 
 import tuples
 import util
+import logging
+logging.basicConfig()
 
 """
 Copy the below with `C-c a y w` (or M-x aya-create) to get an
@@ -135,6 +137,7 @@ def step_impl(context, x, y, z):
 @then('p1 - p2 == vector("{x:f}", "{y:f}", "{z:f}")')
 def step_impl(context, x, y, z):
     result = tuples.t_sub(context.p1, context.p2)
+    logging.error(result)
     assert tuples.t_eq(result, tuples.Vector(x, y, z))
 
 
@@ -396,9 +399,7 @@ def step_impl(context, sc, r, g, b):
     assert tuples.t_eq(
         tuples.t_mul(context.c1, sc),
         tuples.Color(r, g, b))
-    
-    
-    
+
     
 @given('c1 = color({x:f}, {y:f}, {z:f})')
 def step_impl(context, x, y, z):

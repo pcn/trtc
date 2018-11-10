@@ -37,8 +37,8 @@ Scenario: Constructing the PPM pixel data
   And ppm2 = canvas_to_ppm(c)
   Then lines 4-6 of ppm2 are 
   """
-  255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-  0 0 0 0 0 0 0 128 0 0 0 0 0 0 0 
+  255 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  0 0 0 0 0 0 0 128 0 0 0 0 0 0 0
   0 0 0 0 0 0 0 0 0 0 0 0 0 0 255
   """
 

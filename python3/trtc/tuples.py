@@ -39,10 +39,14 @@ def t_add(t1, t2):
     #     raise TypeError(f"Something with an incorrect value made it here: {t1} {t2}")
     def bare_add():
         return tuple([t1[count] + t2[count] for count in range(len(t1))])
-    if type(t1) == 'Vector':
-        return _v(bare_add())
-    elif type(t1) == 'Color':
-        return _c(bare_add())
+    # Poor man's very problematic polymorphism    
+    if type(t1) == type(Vector(0, 0, 0)):
+        return _v(*bare_add())
+    elif type(t1) == type(Color(0, 0, 0)):
+        return _c(*bare_add())
+    elif type(t1) == type(Point(0, 0, 0)):
+        # print("Adding to a point")
+        return Point(*[t1[count] + t2[count] for count in range(len(t1) - 1)])
     else:
         return bare_add()
     
@@ -53,16 +57,18 @@ def t_sub(t1, t2):
     """
     def bare_sub():
         return tuple([t1[count] - t2[count] for count in range(len(t1))])
-    
+
     # Poor man's very problematic polymorphism
     if type(t1) == type(Vector(0, 0, 0)):
         return _v(*bare_sub())
     elif type(t1) == type(Color(0, 0, 0)):
         return _c(*bare_sub())
+    # A point minus a point is a vector
+    elif type(t1) == type(Point(0, 0, 0)):
+        return _v(*bare_sub())
     else:
         return bare_sub()
 
-        
     
 def t_eq(t1, t2, epsilon=.000001):
     """Test if two tuples are equal as defined by util.eq().  This compares any two 
@@ -78,15 +84,33 @@ def t_eq(t1, t2, epsilon=.000001):
     
 def t_neg(t1):
     "Negates a tuple"
-    return t_sub((0, 0, 0, 0), t1)
-
+    val = t_sub((0, 0, 0, 0), t1)
+    # Poor man's very problematic polymorphism
+    return _poor_poly(val, t1)
 
 def t_mul(t1, sc):
-    return tuple([val * sc for val in t1])
-
+    val = tuple([val * sc for val in t1])    
+    # Poor man's very problematic polymorphism
+    return _poor_poly(val, t1)
 
 def t_div(t1, sc):
-    return tuple([val / sc for val in t1])
+    val = tuple([val / sc for val in t1])
+    return _poor_poly(val, t1)
+
+def _poor_poly(val, t1):
+    """Multiplication, divsion and negation should
+    follow these same rules, so just codify them here.
+
+    Subtraction doesn not, though.
+    """
+    if type(t1) == type(Vector(0, 0, 0)):
+        return Vector(*val[:3])
+    elif type(t1) == type(Color(0, 0, 0)):
+        return Color(*val)
+    elif type(t1) == type(Point(0, 0, 0)):
+        return Point(*val[:3])
+    else:
+        return val
 
 
 # The magnitude, normalize, and cross and dot products aren't generic to tuples

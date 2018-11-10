@@ -6,7 +6,7 @@ from functools import reduce
 import util
 import tuples
 
-_c = namedtuple('Canvas', ['height', 'width', 'pixels'])
+_c = namedtuple('Canvas', ['width', 'height', 'pixels'])
 
 
 def Canvas(width, height, fill=tuples.Color(0.0, 0.0, 0.0)):
@@ -14,7 +14,7 @@ def Canvas(width, height, fill=tuples.Color(0.0, 0.0, 0.0)):
 
     For the pixels, we're going to refer to them by width (x), height (y)
     because it seems natural.  However when storing and accessing them,
-    it makes sense to have them be height, width (y, x).
+    it makes sense to have them be height, width (y, x) in the pixels tuple
     """
     pixels = [[fill] * int(height) for count in range(int(width))]
     return _c(width, height, pixels)
@@ -79,6 +79,10 @@ def canvas_to_ppm(c):
     yield f"{max_color}"
     yield "\n"  # This is a separate yield to end up as the 4th element yielded
                 # so the test for the header contents pass without the newline
-    for line in c.pixels:
+
+    for idx in range(len(c.pixels[0])):
+        line = [ pix[idx] for pix in c.pixels ]
+        print(f"Line is {line}")
+        print(f"Len of line id {len(line)}")
         yield "".join(_yield_row(line, min_color, max_color, line_len))
         yield "\n"
