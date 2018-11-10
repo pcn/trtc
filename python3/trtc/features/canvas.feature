@@ -36,13 +36,28 @@ Scenario: Constructing the PPM pixel data
   And write_pixel(c, 4, 2, c3)
   And ppm2 = canvas_to_ppm(c)
   Then lines 4-6 of ppm2 are 
-  """
-  255 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 128 0 0 0 0 0 0 0
-  0 0 0 0 0 0 0 0 0 0 0 0 0 0 255
-  """
+    """
+    255 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 128 0 0 0 0 0 0 0
+    0 0 0 0 0 0 0 0 0 0 0 0 0 0 255
+    """
 
+Scenario: Splitting long lines in PPM files
+  Given c = canvas(10, 2)
+  When Every pixel of c is set to color(1.0, 0.8, 0.6)
+  And ppm3 = canvas_to_ppm(c)
+  Then lines 4-7 of ppm3 are
+    """
+    255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204
+    153 255 204 153 255 204 153 255 204 153 255 204 153
+    255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204
+    153 255 204 153 255 204 153 255 204 153 255 204 153
+    """
 
+Scenario: PPM files are terminated by a newlines
+  Given c = canvas(5, 3)
+  When ppm4 = canvas_to_ppm(c)
+  Then the last character of ppm4 is a newline
 
 
 
