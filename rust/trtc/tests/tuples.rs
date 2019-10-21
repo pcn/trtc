@@ -1,19 +1,21 @@
 // #![feature(core_intrinsics)]  // for type_of
 extern crate cucumber;
 extern crate typename;
-use cucumber::{cucumber, steps, before, after};
+use cucumber::{after, before, cucumber, steps};
 use typename::TypeName;
 
 extern crate trtc;
-use trtc::tuples::{Point, Vector};
 use trtc::tuples::point;
 use trtc::tuples::vector;
+use trtc::tuples::{Point, Vector};
 
-#[derive(TypeName)]    
+#[derive(TypeName)]
 pub struct MyWorld {
     // this struct contains mutable context
     apoint: trtc::tuples::Point,
+    apoint2: trtc::tuples::Point,
     bvec: trtc::tuples::Vector,
+    bvec2: trtc::tuples::Vector,
 }
 
 impl cucumber::World for MyWorld {}
@@ -21,15 +23,24 @@ impl std::default::Default for MyWorld {
     fn default() -> MyWorld {
         // This function is called every time a scenario is  started
         MyWorld {
-            apoint: trtc::tuples::Point{ ..Default::default() },
-            bvec: trtc::tuples::Vector{ ..Default::default() }
+            apoint: trtc::tuples::Point {
+                ..Default::default()
+            },
+            apoint2: trtc::tuples::Point {
+                ..Default::default()
+            },
+            bvec: trtc::tuples::Vector {
+                ..Default::default()
+            },
+            bvec2: trtc::tuples::Vector {
+                ..Default::default()
+            },
         }
     }
 }
 
-
 // fn type_of<T>(_: &T) -> &'static str {
-    // unsafe { std::intrinsics::type_name::<T>() }
+// unsafe { std::intrinsics::type_name::<T>() }
 // }
 
 mod tuples_steps {
@@ -88,8 +99,8 @@ mod tuples_steps {
             assert!(world.bvec.type_name_of() != "trtc::tuples::Point")
         };
 
-        // Scenario: "Point" describes tuples with w=1
-        // given regex r#""Point" describes a tuple with type ([A-Za-z0-9:]+)"# (str) | world, t_type, step| {
+        // // Scenario: "Point" describes tuples with w=1
+        // given regex r#"Point describes a tuple with type ([A-Za-z0-9:]+) and w=1# (str) | world, t_type, step| {
         //     assert!(world.a.type_name_of() == trtc::tuples::Vector{x: x, y: y, z: z, w: w})
         // };
 
@@ -102,22 +113,61 @@ mod tuples_steps {
             world.apoint = trtc::tuples::point(x, y, z)
         };
 
-        given regex r#"a2 <- vector\(
-([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step | {
+        given regex r#"a2 <- vector\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step | {
             world.bvec = trtc::tuples::vector(x, y, z)
         };
 
-        then r#"a1 + a2 == point\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
-        // then r#"a1 + a2 == point(1, 1, 6)"# | world, step | {
-            // let x = 1.0;
-            // let y = 1.0;
-            // let z = 6.0;
-            // XXX: Need to pass the reference to add. OK, ergonomically awwwwkard
+        then regex r#"a1 \+ a2 == point\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
             assert!((&world.apoint + &world.bvec) == trtc::tuples::point(x, y, z))
         };
+
+        // Scenario: Subtracting two points
+        given regex r#"p1 <- point\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            world.apoint = trtc::tuples::point(x, y, z)
+        };
+        given regex r#"p2 <- point\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            world.apoint2 = trtc::tuples::point(x, y, z)
+        };
+        then regex r#"p1 - p2 == vector\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            assert!(&world.apoint - &world.apoint2 == trtc::tuples::vector(x, y, z))
+        };
+        
+        // Scenario: Subtracting a vector from a point
+        given regex r#"p <- point\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            world.apoint = trtc::tuples::point(x, y, z)
+        };
+        given regex r#"v <- vector\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            world.bvec = trtc::tuples::vector(x, y, z)
+        };
+        then regex r#"p - v == point\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            println!("{:?}", &world.apoint - &world.bvec);
+            assert!(&world.apoint - &world.bvec == trtc::tuples::point(x, y, z))
+        };
+        
+        // Scenario: Subtracting two vectors
+        given regex r#"v1 <- vector\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            world.bvec = trtc::tuples::vector(x, y, z)
+        };
+        given regex r#"v2 <- vector\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            world.bvec2 = trtc::tuples::vector(x, y, z)
+        };
+        then regex r#"v1 - v2 == vector\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            assert!(&world.bvec - &world.bvec2 == trtc::tuples::vector(x, y, z))
+        };
+        
+        // Scenario: Subracting a vector from the zero vector
+        given regex r#"zero <- vector\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            world.bvec = trtc::tuples::vector(x, y, z)
+        };
+        given regex r#"v_sub <- vector\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            world.bvec2 = trtc::tuples::vector(x, y, z)
+        };
+        then regex r#"zero - v == vector\(([\-0-9.]+), ([\-0-9.]+), ([\-0-9.]+)\)"# (f64, f64, f64) | world, x, y, z, step| {
+            assert!(&world.bvec - &world.bvec2 == trtc::tuples::vector(x, y, z))
+        };
+        
     });
 }
-
 
 cucumber! {
     features: "./features", // Path to our feature files
@@ -128,8 +178,8 @@ cucumber! {
     // setup: setup, // Optional; called once before everything
     // before: &[
     //     a_before_fn // Optional; called before each scenario
-    // ], 
+    // ],
     // after: &[
     //     an_after_fn // Optional; called after each scenario
-    // ls] 
-}    
+    // ls]
+}
