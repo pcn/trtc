@@ -48,12 +48,54 @@ Feature: A tuple 2 different ways gives us either a point or a vector
     And v2 <- vector(5, 6, 7)
     Then v1 - v2 == vector(-2, -4, -6) 
 
-  Scenario: Subracting a vector from the zero vector
+  Scenario: Subtracting a vector from the zero vector
     Given zero <- vector(0, 0, 0)
     And v_sub <- vector(1, -2, 3)
     Then zero - v == vector(-1, 2, -3)
 
-  # XXX: Is this going to be best handled by having a negation operator for both
-  # vectors and points, or is there a reason to do something like convert to a tuple here?
-  # Scenario: Negating a tuple
-  #   Given a <- vector(1, -2, 3
+  Scenario: Negating a tuple
+    Given c <- tuple(1, -2, 3, -4)
+    Then -c == tuple(-1, 2, -3, 4)
+
+  Scenario: Negating a vector
+    Given bneg <- vector(1, -2, 3)
+    Then -bneg == vector(-1, 2, -3)
+
+  Scenario: Multiplying a tuple by a scalar
+    Given c <- tuple(1, -2, 3, -4)
+    Then c * 3.5 == tuple(3.5, -7, 10.5, -14)
+
+  Scenario: Multiplying a tuple by a fraction
+    Given c_frac <- tuple(1, -2, 3, -4)
+    Then c_frac * 0.5 == tuple(0.5, -1, 1.5, -2)
+
+  Scenario: Computing the magnitude of vector(1, 0, 0)
+    Given v100 <- vector(1, 0, 0)
+    Then magnitude(v100) == 1 
+
+  Scenario: Computing the magnitude of vector(0, 1, 0)
+    Given v010 <- vector(0, 1, 0)
+    Then magnitude(v010) == 1
+
+  Scenario: Computing the magnitude of vector(0, 0, 1)
+    Given v001 <- vector(0, 0, 1)
+    Then magnitude(v001) == 1
+
+  Scenario: Computing the magnitude of vector(1, 2, 3)
+    Given v123 <- vector(1, 2, 3)
+    Then magnitude(v123) == sqrt(14)
+
+  Scenario: Computing the magnitude of vector(-1, -2, -3)
+    Given vneg123 <- vector(1, 2, 3)
+    Then magnitude(vneg123) == sqrt(14)
+
+  Scenario: Normalizing vector(4, 0, 0) gives (1, 0, 0)
+    Given v <- vector(4, 0, 0)
+    Then normalize(vnorm) == vector(1, 0, 0)
+
+  Scenario: Normalizing vector(1, 2, 3)
+    Given vnorm123 <- vector(1, 2, 3)
+    # Approximately 1/sqrt(14), 2/sqrt(14), 3/sqrt(14)
+    Then normalize(vnorm123) == approximately vector(0.26726, 0.53452, 0.80178)
+
+
